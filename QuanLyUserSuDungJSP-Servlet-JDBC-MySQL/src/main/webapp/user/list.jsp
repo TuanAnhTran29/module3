@@ -30,13 +30,13 @@
         </tr>
         <c:forEach var="user" items="${listUser}">
             <tr>
-                <td><c:out value="${user.id}"/></td>
-                <td><c:out value="${user.name}"/></td>
-                <td><c:out value="${user.email}"/></td>
-                <td><c:out value="${user.country}"/></td>
+                <td><c:out value="${user.getId()}"/></td>
+                <td><c:out value="${user.getName()}"/></td>
+                <td><c:out value="${user.getEmail()}"/></td>
+                <td><c:out value="${user.getCountry()}"/></td>
                 <td>
-                    <a href="/users?action=edit&id=${user.id}">Edit</a>
-                    <a href="/users?action=delete&id=${user.id}">Delete</a>
+                    <a href="/users?action=edit&id=${user.getId()}">Edit</a>
+                    <a href="/users?action=delete&id=${user.getId()}">Delete</a>
                 </td>
             </tr>
         </c:forEach>
