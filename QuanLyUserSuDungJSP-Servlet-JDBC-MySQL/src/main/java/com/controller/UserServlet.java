@@ -34,6 +34,9 @@ public class UserServlet extends HttpServlet {
                 case "edit":
                     updateUser(request, response);
                     break;
+                case "find":
+                    findUserByCountry(request,response);
+                    break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -57,6 +60,9 @@ public class UserServlet extends HttpServlet {
                     break;
                 case "delete":
                     deleteUser(request, response);
+                    break;
+                case "find":
+                    showFindForm(request,response);
                     break;
                 default:
                     listUser(request, response);
@@ -89,6 +95,18 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("user", existingUser);
         dispatcher.forward(request, response);
 
+    }
+
+    private void showFindForm(HttpServletRequest request,HttpServletResponse response){
+        RequestDispatcher requestDispatcher= request.getRequestDispatcher("user/find.jsp");
+
+        try {
+            requestDispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
@@ -124,5 +142,21 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("listUser", listUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
         dispatcher.forward(request, response);
+    }
+
+    private void findUserByCountry(HttpServletRequest request,HttpServletResponse response){
+        String country= request.getParameter("country");
+        List<User> users= userDAO.selectByCountry(country);
+        request.setAttribute("users",users);
+        request.setAttribute("message","Can find user with country " + country);
+        RequestDispatcher requestDispatcher= request.getRequestDispatcher("user/find.jsp");
+
+        try {
+            requestDispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
