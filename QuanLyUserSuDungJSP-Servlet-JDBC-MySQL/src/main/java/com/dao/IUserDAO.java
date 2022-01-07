@@ -26,4 +26,6 @@ public interface IUserDAO {
 
     public void insertUpdateWithoutTransaction();
 
+    public void insertUpdateUseTransaction();
+
 }
