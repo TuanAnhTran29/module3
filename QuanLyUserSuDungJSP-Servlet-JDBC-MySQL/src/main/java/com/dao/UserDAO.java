@@ -225,7 +225,7 @@ public class UserDAO implements IUserDAO {
             }
 
             if (rowAffected == 1){
-                String sqlPivot = "INSERT INTO user_permission(user_id,permission_id) "
+                String sqlPivot =  "INSERT INTO user_permission(user_id,permission_id) "
 
                         + "VALUES(?,?)";
 

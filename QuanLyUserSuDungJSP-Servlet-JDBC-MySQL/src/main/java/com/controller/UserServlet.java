@@ -155,7 +155,7 @@ public class UserServlet extends HttpServlet {
 
     private void findUserByCountry(HttpServletRequest request,HttpServletResponse response){
         String country= request.getParameter("country");
-        List<User> users= userDAO.selectByCountry(country);
+        List<User> users=  userDAO.selectByCountry(country);
         request.setAttribute("users",users);
         request.setAttribute("message","Can not find user with country " + country);
         RequestDispatcher requestDispatcher= request.getRequestDispatcher("user/find.jsp");
