@@ -173,6 +173,73 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+    @Override
+    public void addUserTransaction(User user, int[] permissions) {
+        Connection connection= null;
+
+        PreparedStatement preparedStatement= null;
+
+        PreparedStatement pstmtAssignment = null;
+
+        ResultSet rs= null;
+
+        try {
+            connection= getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement= connection.prepareStatement(INSERT_USERS_SQL, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1,user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getCountry());
+
+            int rowAffected= preparedStatement.executeUpdate();
+
+            rs= preparedStatement.getGeneratedKeys();
+            int userId= 0;
+
+            if (rs.next()){
+                userId= rs.getInt(1);
+            }
+
+            if (rowAffected == 1){
+                String sqlPivot = "INSERT INTO user_permission(user_id,permission_id) "
+
+                        + "VALUES(?,?)";
+
+                pstmtAssignment= connection.prepareStatement(sqlPivot);
+                for (int permissionId : permissions){
+                    pstmtAssignment.setInt(1,userId);
+                    pstmtAssignment.setInt(2,permissionId);
+                    pstmtAssignment.executeUpdate();
+                }
+
+                connection.commit();
+            }else {
+                connection.rollback();
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (rs != null) rs.close();
+
+                if (preparedStatement != null) preparedStatement.close();
+
+                if (pstmtAssignment != null) pstmtAssignment.close();
+
+                if (connection != null) connection.close();
+
+            } catch (SQLException e) {
+
+                System.out.println(e.getMessage());
+
+            }
+
+        }
+    }
+
     private void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {
