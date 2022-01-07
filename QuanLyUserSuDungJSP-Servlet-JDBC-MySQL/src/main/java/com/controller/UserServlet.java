@@ -90,7 +90,7 @@ public class UserServlet extends HttpServlet {
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        User existingUser = userDAO.selectUser(id);
+        User existingUser = userDAO.getUserById(id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/edit.jsp");
         request.setAttribute("user", existingUser);
         dispatcher.forward(request, response);
@@ -115,7 +115,7 @@ public class UserServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
         User newUser = new User(name, email, country);
-        userDAO.insertUser(newUser);
+        userDAO.insertUserStore(newUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/create.jsp");
         dispatcher.forward(request, response);
     }
@@ -148,7 +148,7 @@ public class UserServlet extends HttpServlet {
         String country= request.getParameter("country");
         List<User> users= userDAO.selectByCountry(country);
         request.setAttribute("users",users);
-        request.setAttribute("message","Can find user with country " + country);
+        request.setAttribute("message","Can not find user with country " + country);
         RequestDispatcher requestDispatcher= request.getRequestDispatcher("user/find.jsp");
 
         try {

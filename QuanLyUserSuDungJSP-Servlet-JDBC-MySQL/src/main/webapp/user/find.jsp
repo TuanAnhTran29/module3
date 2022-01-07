@@ -15,7 +15,7 @@
     <p>
         <a href="/users">Back to user list</a>
     </p>
-    <c:if test="${requestScope['message'] != null}">
+    <c:if test="${requestScope['users'] != null}">
         <p>${requestScope['message']}</p>
     </c:if>
 
