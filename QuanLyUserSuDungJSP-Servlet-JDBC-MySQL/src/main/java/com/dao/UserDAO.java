@@ -331,6 +331,53 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+    @Override
+    public List<User> showAllUser() {
+        List<User> userList= new ArrayList<>();
+        String query= "{call show_all_user}";
+        try (Connection connection= getConnection();CallableStatement callableStatement= connection.prepareCall(query)){
+            ResultSet rs= callableStatement.executeQuery();
+
+            while (rs.next()){
+                int id= rs.getInt("id");
+                String name= rs.getString("name");
+                String email= rs.getString("email");
+                String country= rs.getString("country");
+                userList.add(new User(id,name,email,country));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    @Override
+    public void updateUser(int id, String name, String email, String country) {
+        String query= "{call update_user(?,?,?,?)}";
+        try (Connection connection= getConnection();CallableStatement callableStatement= connection.prepareCall(query)){
+            callableStatement.setInt(1,id);
+            callableStatement.setString(2,name);
+            callableStatement.setString(3,email);
+            callableStatement.setString(4,country);
+            ResultSet rs= callableStatement.executeQuery();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteUserRecord(int id) {
+        String query="{call delete_user(?)}";
+        try (Connection connection=getConnection();CallableStatement callableStatement= connection.prepareCall(query)){
+            callableStatement.setInt(1,id);
+            ResultSet rs= callableStatement.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+
     private void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {

@@ -28,4 +28,9 @@ public interface IUserDAO {
 
     public void insertUpdateUseTransaction();
 
+    public List<User> showAllUser();
+
+    public void updateUser(int id,String name,String email,String country);
+
+    public void deleteUserRecord(int id);
 }
