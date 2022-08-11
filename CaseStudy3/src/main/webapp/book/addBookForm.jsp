@@ -22,20 +22,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/librarians">Home</a>
+                    <a class="nav-link" aria-current="page" href="/librarians">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/loancards?action=showLoanCardByLibrarian&studentId=${student.getId()}">Card</a>
+                    <a class="nav-link" href="/loancards?action=showLoanCardByLibrarian">Card</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/librarians?action=showAddBookForm&studentId=${student.getId()}">Add Book</a>
+                    <a class="nav-link active" href="/librarians?action=showAddBookForm">Add Book</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/librarians?action=viewAccountByLibrarian&studentId=${student.getId()}">View Student Account</a>
+                    <a class="nav-link" href="/librarians?action=viewAccountByLibrarian">View Student Account</a>
                 </li>
             </ul>
             <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
@@ -58,7 +58,15 @@
 
                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Add Book Form</p>
 
-                                <form method="post" action="/librarians?action=addBook" class="mx-1 mx-md-4">
+                                <form method="post" action="/books?action=addBook" class="mx-1 mx-md-4">
+
+<%--                                    <div class="d-flex flex-row align-items-center mb-4">--%>
+<%--                                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>--%>
+<%--                                        <div class="form-outline flex-fill mb-0">--%>
+<%--                                            <input name="id" type="hidden" id="form3Example0c" class="form-control" />--%>
+
+<%--                                        </div>--%>
+<%--                                    </div>--%>
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <i class="fas fa-user fa-lg me-3 fa-fw"></i>

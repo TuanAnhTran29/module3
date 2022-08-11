@@ -34,11 +34,43 @@ public class BookServlet extends HttpServlet {
             action="";
         }
         switch (action){
+            case "searchBookAdmin":
+                searchBookAdmin(request,response);
+                break;
+            case "addBook":
+                addBook(request,response);
+                break;
             case "searchBook":
-                searchBook(request,response);
+                searchBookStudent(request,response);
                 break;
         }
 
+    }
+
+    private void searchBookStudent(HttpServletRequest request, HttpServletResponse response) {
+        String name= request.getParameter("search");
+        int studentId= Integer.parseInt(request.getParameter("studentId"));
+
+        Student student= studentService.findById(studentId);
+
+        Book book= bookService.findByBookName(name);
+        if(book != null){
+            request.setAttribute("book",book);
+            request.setAttribute("student",student);
+        }else{
+            request.setAttribute("message","Can not find this book!");
+            request.setAttribute("student",student);
+        }
+
+
+        RequestDispatcher requestDispatcher= request.getRequestDispatcher("search/searchBook.jsp");
+        try {
+            requestDispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void listBook(HttpServletRequest request, HttpServletResponse response){
@@ -54,27 +86,68 @@ public class BookServlet extends HttpServlet {
         }
     }
 
-    private void searchBook(HttpServletRequest request,HttpServletResponse response){
-        int studentId= Integer.parseInt(request.getParameter("studentId"));
+    private void searchBookAdmin(HttpServletRequest request,HttpServletResponse response){
         String name= request.getParameter("search");
 
         Book book= bookService.findByBookName(name);
-        List<LoanCard> loanCardList= loanCardService.findByStudentId(studentId);
-        Student student= studentService.findById(studentId);
+        if(book != null){
+            request.setAttribute("book",book);
+        }else{
+            request.setAttribute("message","Can not find this book!");
+        }
 
 
-        request.setAttribute("student",student);
-        request.setAttribute("bookList",bookService.findAll());
-        request.setAttribute("loancards",loanCardList);
-        request.setAttribute("message","Can not find this book!");
-        request.setAttribute("book",book);
-        RequestDispatcher requestDispatcher= request.getRequestDispatcher("search/searchBook.jsp");
+        RequestDispatcher requestDispatcher= request.getRequestDispatcher("search/searchBookAdmin.jsp");
         try {
             requestDispatcher.forward(request,response);
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addBook(HttpServletRequest request, HttpServletResponse response){
+//        int id= Integer.parseInt(request.getParameter("id"));
+        String bookName= request.getParameter("bookName");
+        String author= request.getParameter("author");
+        String description= request.getParameter("description");
+        int quantity= Integer.parseInt(request.getParameter("quantity"));
+
+        List<Book> bookList= bookService.findAll();
+        Book book= bookService.findByBookName(bookName);
+
+        for (Book b: bookList){
+            if (b.getName().equals(bookName)){
+                book= b;
+                book.setQuantity(book.getQuantity() + quantity);
+                book.setDescription(description);
+                bookService.update(book.getId(), book);
+
+
+                request.setAttribute("bookList",bookService.findAll());
+                RequestDispatcher requestDispatcher= request.getRequestDispatcher("librarian/librarianHomePage.jsp");
+                try {
+                    requestDispatcher.forward(request,response);
+                } catch (ServletException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Book book1= new Book(bookName,author,description,quantity);
+                bookService.add(book1);
+
+                request.setAttribute("bookList",bookService.findAll());
+                RequestDispatcher requestDispatcher= request.getRequestDispatcher("librarian/librarianHomePage.jsp");
+                try {
+                    requestDispatcher.forward(request,response);
+                } catch (ServletException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

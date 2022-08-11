@@ -24,6 +24,7 @@ public class LibrarianService implements ILibrarianService {
     private static final String UPDATE_LIBRARIAN= "update librarian set name=?, account_id=? where id=?";
     private static final String DELETE_FROM_LIBRARIAN= "delete from librarian where id=?";
 
+
     @Override
     public void add(Librarian librarian) {
         try {

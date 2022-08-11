@@ -25,16 +25,16 @@
                     <a class="nav-link active" aria-current="page" href="/librarians">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/loancards?action=showLoanCardByLibrarian&studentId=${student.getId()}">Card</a>
+                    <a class="nav-link" href="/loancards?action=showLoanCardByLibrarian">Card</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/librarians?action=showAddBookForm&studentId=${student.getId()}">Add Book</a>
+                    <a class="nav-link" href="/librarians?action=showAddBookForm">Add Book</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/librarians?action=viewAccountByLibrarian&studentId=${student.getId()}">View Student Account</a>
+                    <a class="nav-link" href="/librarians?action=viewAccountByLibrarian">View Student Account</a>
                 </li>
             </ul>
-            <form class="d-flex">
+            <form method="post" action="/books?action=searchBookAdmin" class="d-flex">
                 <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
@@ -78,6 +78,7 @@
         </c:forEach>
         </tbody>
     </table>
+    <button class="btn btn-primary"><a style="color: white;text-decoration: none" href="/accounts">Logout</a></button>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

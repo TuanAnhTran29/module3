@@ -13,6 +13,8 @@ import com.service.loancardstatusservice.ILoanCardStatusService;
 import com.service.loancardstatusservice.LoanCardStatusService;
 import com.service.statusservice.IStatusService;
 import com.service.statusservice.StatusService;
+import com.service.studentservice.IStudentService;
+import com.service.studentservice.StudentService;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -28,10 +30,11 @@ import java.util.Random;
 public class LibrarianServlet extends HttpServlet {
     private IStatusService statusService= new StatusService();
     private ILoanCardStatusService loanCardStatusService= new LoanCardStatusService();
-    private LibrarianService librarianService= new LibrarianService();
+    private ILibrarianService librarianService= new LibrarianService();
     private ILoanCardService loanCardService= new LoanCardService();
     private IBookService bookService = new BookService();
     private IAccountService accountService= new AccountService();
+    private IStudentService studentService= new StudentService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,14 +71,63 @@ public class LibrarianServlet extends HttpServlet {
             action = "";
         }
         switch (action){
-            case "addBook":
-                addBook(request,response);
-                break;
             case "updateBook":
                 updateBook(request,response);
                 break;
+            case "searchLoanCardByAdmin":
+                searchCardByStudentName(request,response);
+                break;
+            case "searchAccount":
+                searchAccount(request,response);
+                break;
         }
 
+    }
+
+    private void searchAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String username= request.getParameter("search");
+
+            Account studentAccount= accountService.findByUserName(username);
+            if(studentAccount != null){
+                request.setAttribute("studentAccount",studentAccount);
+
+            }else{
+                request.setAttribute("message","Can not find this student");
+            }
+
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("search/searchAccount.jsp");
+            requestDispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void searchCardByStudentName(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<LoanCard> loanCardList= new ArrayList<>();
+            String studentName= request.getParameter("search");
+            for(LoanCard l : loanCardService.findAll()) {
+                if (l.getStudent().getName().equals(studentName)) {
+                    loanCardList.add(l);
+                }
+            }
+            if(loanCardList.isEmpty()){
+                request.setAttribute("message","Can not find this student");
+            }
+
+
+            request.setAttribute("loanCardList",loanCardList);
+
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("search/searchLoanCardByAdmin.jsp");
+            requestDispatcher.forward(request,response);
+        }catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void listBook(HttpServletRequest request, HttpServletResponse response) {
@@ -118,48 +170,7 @@ public class LibrarianServlet extends HttpServlet {
         }
     }
 
-    private void addBook(HttpServletRequest request, HttpServletResponse response){
-        String bookName= request.getParameter("bookName");
-        String author= request.getParameter("author");
-        String description= request.getParameter("description");
-        int quantity= Integer.parseInt(request.getParameter("quantity"));
 
-        List<Book> bookList= bookService.findAll();
-        Book book= bookService.findByBookName(bookName);
-
-        for (Book b: bookList){
-            if (b.getName().equals(bookName)){
-                book= b;
-                book.setQuantity(book.getQuantity() + quantity);
-                book.setDescription(description);
-                bookService.update(book.getId(), book);
-
-
-                request.setAttribute("bookList",bookService.findAll());
-                RequestDispatcher requestDispatcher= request.getRequestDispatcher("librarian/librarianHomePage.jsp");
-                try {
-                    requestDispatcher.forward(request,response);
-                } catch (ServletException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }else {
-                Book book1= new Book(bookName,author,description,quantity);
-                bookService.add(book1);
-
-                request.setAttribute("bookList",bookService.findAll());
-                RequestDispatcher requestDispatcher= request.getRequestDispatcher("librarian/librarianHomePage.jsp");
-                try {
-                    requestDispatcher.forward(request,response);
-                } catch (ServletException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     private void showUpdateForm(HttpServletRequest request,HttpServletResponse response){
         int id= Integer.parseInt(request.getParameter("bookId")) ;
