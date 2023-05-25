@@ -124,7 +124,7 @@ public class AccountService implements IAccountService {
 
             while (rs.next()){
                 int id= rs.getInt("id");
-                account= this.findById(id);
+                account= findById(id);
             }
 
         } catch (SQLException e) {

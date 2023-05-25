@@ -102,6 +102,7 @@ public class StudentServlet extends HttpServlet {
 
             Book book= bookService.findById(bookId);
             Student student= studentService.findById(studentId);
+            System.out.println(student.getName());
 
 
             request.setAttribute("borrowDate",borrowBookDate);

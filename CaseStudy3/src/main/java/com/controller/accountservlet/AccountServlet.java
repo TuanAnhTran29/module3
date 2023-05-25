@@ -18,10 +18,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @WebServlet(name = "AccountServlet", value = "/accounts")
 public class AccountServlet extends HttpServlet {
@@ -31,6 +28,7 @@ public class AccountServlet extends HttpServlet {
     IStatusService statusService= new StatusService();
     IRoleService roleService= new RoleService();
     IStudentService studentService= new StudentService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action= request.getParameter("action");
@@ -170,7 +168,21 @@ public class AccountServlet extends HttpServlet {
         Status status= statusService.findById(1);
         Role role= roleService.findById(Integer.parseInt(request.getParameter("role")));
 
-        if (accountService.findByUserName(username) != null){
+        if (fullName.isEmpty() || fullName.matches("\\s+")
+        || username.isEmpty() || username.matches("\\s+")
+        || password.isEmpty() || password.matches("\\s+")
+        || checkPassword.isEmpty() || checkPassword.matches("\\s+")
+        || role == null){
+            request.setAttribute("message","Information entered cannot be blank");
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/createAccountForm.jsp");
+            try {
+                requestDispatcher.forward(request,response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if (accountService.findByUserName(username) != null){
             request.setAttribute("message","Username is already used! Please try again");
             request.setAttribute("fullName",fullName);
             RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/createAccountForm.jsp");
@@ -228,59 +240,80 @@ public class AccountServlet extends HttpServlet {
         String name= request.getParameter("studentName");
         String className= request.getParameter("className");
         int id= Integer.parseInt(request.getParameter("accountId"));
-        Account account= accountService.findById(id);
-        Student student= new Student(name,className,account);
 
-        studentService.add(student);
-        List<Student> studentList= studentService.findAll();
-        Student student1= new Student();
-        for (Student st: studentList){
-            if (st.getAccount().getId() == account.getId()){
-                student1= st;
-                break;
+        if (name.isEmpty() || name.matches("\\s+")
+        || className.isEmpty() || className.matches("\\s+")){
+            request.setAttribute("message","Information entered cannot be blank");
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("student/createStudent.jsp");
+            try {
+                requestDispatcher.forward(request,response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            Account account= accountService.findById(id);
+            Student student= new Student(name,className,account);
+
+            studentService.add(student);
+            List<Student> studentList= studentService.findAll();
+            Student student1= new Student();
+            for (Student st: studentList){
+                if (st.getAccount().getId() == account.getId()){
+                    student1= st;
+                    break;
+                }
+            }
+            request.setAttribute("student",student1);
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/login.jsp");
+            try {
+                requestDispatcher.forward(request,response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-
-
-
-        request.setAttribute("student",student1);
-        RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/login.jsp");
-        try {
-            requestDispatcher.forward(request,response);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     private void createLibrarian(HttpServletRequest request, HttpServletResponse response){
         String name= request.getParameter("librarianName");
         int id= Integer.parseInt(request.getParameter("accountId"));
-        Account account= accountService.findById(id);
-        Librarian librarian= new Librarian(name,account);
-
-        librarianService.add(librarian);
-        List<Librarian> librarianList= librarianService.findAll();
-        Librarian librarian1= new Librarian();
-        for (Librarian l: librarianList){
-            if (l.getAccount().getId() == account.getId()) {
-                librarian1= l;
-                break;
+        if (name.isEmpty() || name.matches("\\s+")){
+            request.setAttribute("message","Information entered cannot be blank");
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("librarian/createLibrarian.jsp");
+            try {
+                requestDispatcher.forward(request,response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
+        }else{
+            Account account= accountService.findById(id);
+            Librarian librarian= new Librarian(name,account);
 
-        request.setAttribute("librarian",librarian1);
+            librarianService.add(librarian);
+            List<Librarian> librarianList= librarianService.findAll();
+            Librarian librarian1= new Librarian();
+            for (Librarian l: librarianList){
+                if (l.getAccount().getId() == account.getId()) {
+                    librarian1= l;
+                    break;
+                }
+            }
 
-        RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/login.jsp");
-        try {
-            requestDispatcher.forward(request,response);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            request.setAttribute("librarian",librarian1);
+
+            RequestDispatcher requestDispatcher= request.getRequestDispatcher("account/login.jsp");
+            try {
+                requestDispatcher.forward(request,response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

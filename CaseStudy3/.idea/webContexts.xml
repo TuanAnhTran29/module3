@@ -6,6 +6,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/account/accountListChanged.jsp" value="file://$PROJECT_DIR$/src/main/webapp/account" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/account/create.jsp" value="file://$PROJECT_DIR$/src/main/webapp/account" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/account/createAccountForm.jsp" value="file://$PROJECT_DIR$/src/main/webapp/account" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/account/login.jsp" value="file://$PROJECT_DIR$/src/main/webapp/account" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/book/borrowBookForm.jsp" value="file://$PROJECT_DIR$/src/main/webapp/book" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/book/borrowBookFormOfLibrarian.jsp" value="file://$PROJECT_DIR$/src/main/webapp/book" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/student/studentHomePage.jsp" value="file://$PROJECT_DIR$/src/main/webapp/student" />
